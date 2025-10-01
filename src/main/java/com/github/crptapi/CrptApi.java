@@ -111,7 +111,7 @@ public class CrptApi {
         return Base64.getEncoder().encodeToString(input.getBytes());
     }
 
-    class CreateDocResponse {
+    static class CreateDocResponse {
         private String value;
         private String code;
         private String errorMessage;
@@ -143,7 +143,7 @@ public class CrptApi {
         }
     }
 
-    class ProductDocument {
+    static class ProductDocument {
         private final Description description;
         private final @JsonProperty("doc_id") String docId;
         private final @JsonProperty("doc_status") String docStatus;
@@ -240,7 +240,7 @@ public class CrptApi {
         }
     }
 
-    class Description {
+    static class Description {
         private final String participateInn;
         Description(String participateInn) {
             this.participateInn = participateInn;
@@ -250,7 +250,7 @@ public class CrptApi {
         }
     }
 
-    class Product {
+    static class Product {
         private final @JsonProperty("certificate_document") String certificateDocument;
         private final @JsonProperty("certificate_document_date") LocalDate certificateDocumentDate;
         private final @JsonProperty("certificate_document_number") String certificateDocumentNumber;
