@@ -30,19 +30,22 @@ public class CrptApi {
     private final int requestLimit;
     private final ScheduledExecutorService scheduler;
 
-    public CrptApi(TimeUnit timeUnit,
+    public CrptApi(HttpClient client,
+                   String token,
+                   ObjectMapper objectMapper,
+                   TimeUnit timeUnit,
+                   Semaphore semaphore,
                    int requestLimit,
-                   String token) {
-        this.client = HttpClient.newBuilder()
-                .version(HttpClient.Version.HTTP_2)
-                .build();
+                   ScheduledExecutorService scheduler
+    ) {
+        this.client = client;
         this.token = token;
-        this.objectMapper = new ObjectMapper();
+        this.objectMapper = objectMapper;
         objectMapper.findAndRegisterModules();
 
         this.requestLimit = requestLimit;
-        this.semaphore = new Semaphore(requestLimit, true);
-        this.scheduler = Executors.newSingleThreadScheduledExecutor();
+        this.semaphore = semaphore;
+        this.scheduler = scheduler;
         scheduler.scheduleAtFixedRate(() -> {
             synchronized (semaphore) {
                 int toRelease = requestLimit - semaphore.availablePermits();
@@ -51,6 +54,19 @@ public class CrptApi {
                 }
             }
         }, 1, 1, timeUnit);
+    }
+
+    public CrptApi(TimeUnit timeUnit,
+                   int requestLimit,
+                   String token) {
+        this(HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build(),
+             token,
+             new ObjectMapper(),
+             timeUnit,
+             new Semaphore(requestLimit, true),
+             requestLimit,
+             Executors.newSingleThreadScheduledExecutor()
+        );
     }
 
     public CreateDocResponse createDoc(ProductDocument productDocument,
