@@ -93,8 +93,8 @@ public class CrptApi {
         return objectMapper.writeValueAsString(map);
     }
 
-    private String sendCreateDocRequest(String requestPayload, String productGroup)
-            throws IOException, InterruptedException, URISyntaxException {
+    private String sendCreateDocRequest(String requestPayload,
+                                        String productGroup) throws IOException, InterruptedException, URISyntaxException {
 
         HttpRequest request = HttpRequest.newBuilder(
                         new URI("https://ismp.crpt.ru/api/v3/lk/documents/create?pg=" + productGroup))
